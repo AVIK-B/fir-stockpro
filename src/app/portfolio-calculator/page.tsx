@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -90,26 +90,40 @@ export default function PortfolioCalculatorPage() {
     }
   };
   
-  const chartConfig = React.useMemo(() => {
-    if (!suggestionResult?.portfolioAllocation) return {} as ChartConfig;
+  const chartConfig = useMemo<ChartConfig>(() => {
+    const allocation = suggestionResult?.portfolioAllocation;
+    if (!Array.isArray(allocation) || allocation.length === 0) {
+      return {} as ChartConfig;
+    }
     
     const config: ChartConfig = {};
-    suggestionResult.portfolioAllocation.forEach((asset, index) => {
-      config[asset.assetClass] = {
-        label: asset.assetClass,
-        color: CHART_COLORS[index % CHART_COLORS.length],
-      };
+    allocation.forEach((asset, index) => {
+      if (asset && typeof asset.assetClass === 'string') {
+        config[asset.assetClass] = {
+          label: asset.assetClass,
+          color: CHART_COLORS[index % CHART_COLORS.length],
+        };
+      }
     });
     return config;
   }, [suggestionResult]);
 
-  const chartData = React.useMemo(() => {
-    if (!suggestionResult?.portfolioAllocation) return [];
-    return suggestionResult.portfolioAllocation.map(asset => ({
-      name: asset.assetClass,
-      value: asset.percentage,
-      fill: chartConfig[asset.assetClass]?.color || CHART_COLORS[0], // Fallback color
-    }));
+  const chartData = useMemo(() => {
+    const allocation = suggestionResult?.portfolioAllocation;
+    if (!Array.isArray(allocation) || allocation.length === 0 || Object.keys(chartConfig).length === 0) {
+      return [];
+    }
+    const mappedData = allocation.map(asset => {
+      if (asset && typeof asset.assetClass === 'string' && typeof asset.percentage === 'number') {
+        return {
+          name: asset.assetClass,
+          value: asset.percentage,
+          fill: chartConfig[asset.assetClass]?.color || CHART_COLORS[0], 
+        };
+      }
+      return null; 
+    });
+    return mappedData.filter(item => item !== null) as { name: string; value: number; fill: string; }[];
   }, [suggestionResult, chartConfig]);
 
 
@@ -289,7 +303,7 @@ export default function PortfolioCalculatorPage() {
                 <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{suggestionResult.riskAnalysis}</p>
               </CardContent>
             </Card>
-          </Card>
+          </div>
           
           <Card className="shadow-xl">
             <CardHeader>
@@ -308,3 +322,4 @@ export default function PortfolioCalculatorPage() {
     </div>
   );
 }
+
