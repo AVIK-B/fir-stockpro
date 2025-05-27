@@ -167,4 +167,3 @@ function FeatureCard({ icon, title, description, link, linkLabel }: FeatureCardP
     </Card>
   );
 }
-
