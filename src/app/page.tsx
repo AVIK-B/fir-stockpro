@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Cpu, Briefcase, Newspaper, FileText, Landmark, History as HistoryIcon, PiggyBank } from 'lucide-react'; // Added PiggyBank
+import { Cpu, Briefcase, Newspaper, FileText, Landmark, History as HistoryIcon, PiggyBank } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -28,7 +28,7 @@ export default function HomePage() {
             <Link href="/market-insights">Explore Market Insights</Link>
           </Button>
            <Button asChild size="lg" variant="secondary" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            <Link href="/portfolio-calculator">Portfolio Calculator</Link>
+            <Link href="/portfolio-investment-suggestions">Portfolio Investment Suggestions</Link>
           </Button>
         </div>
       </section>
@@ -103,10 +103,10 @@ export default function HomePage() {
           />
            <FeatureCard
             icon={<PiggyBank className="h-10 w-10 text-accent" />}
-            title="AI Portfolio Calculator"
+            title="AI Portfolio Investment Suggestions"
             description="Receive AI-generated portfolio suggestions based on your investment amount and risk tolerance. Visualize potential allocations."
-            link="/portfolio-calculator"
-            linkLabel="Calculate Portfolio"
+            link="/portfolio-investment-suggestions"
+            linkLabel="Get Suggestions"
           />
           <FeatureCard
             icon={<HistoryIcon className="h-10 w-10 text-accent" />}
@@ -132,7 +132,7 @@ export default function HomePage() {
             Dive into the world of AI-assisted stock option analysis and portfolio planning with StockPro Analytics.
          </p>
          <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            <Link href="/portfolio-calculator">Start Analyzing Now</Link>
+            <Link href="/portfolio-investment-suggestions">Start Analyzing Now</Link>
           </Button>
       </section>
     </div>
