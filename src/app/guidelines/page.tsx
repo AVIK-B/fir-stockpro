@@ -1,6 +1,7 @@
+
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Lightbulb, AlertTriangle, TrendingUp, FileSearch } from 'lucide-react';
 
 export default function GuidelinesPage() {
   return (
