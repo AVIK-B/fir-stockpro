@@ -34,7 +34,7 @@ const PortfolioSuggestionOutputSchema = z.object({
   riskAnalysis: z.string().describe("Analysis of the portfolio's overall risk level in relation to the suggested allocation, selected risk tolerance, and target annual return. Discuss potential downsides or volatility."),
   strategyCommentary: z.string().describe("General commentary on the investment strategy, market conditions considered (based on your general knowledge up to your last training data cut-off), and how it aligns with the investor's inputs (risk tolerance and target annual return). Mention that this strategy assumes a medium to long-term investment horizon unless specified otherwise."),
   importantDisclaimer: z.string().default("IMPORTANT: This is an AI-generated portfolio suggestion for informational and educational purposes only. It is NOT financial advice. All investments carry risk, and past performance does not guarantee future results. Market conditions are dynamic. Consult with a qualified financial advisor before making any investment decisions.")
-    .describe("Mandatory disclaimer about the nature of AI suggestions and the need for professional advice.")
+    .describe("Mandatory disclaimer. MUST contain the exact text: 'IMPORTANT: This is an AI-generated portfolio suggestion for informational and educational purposes only. It is NOT financial advice. All investments carry risk, and past performance does not guarantee future results. Market conditions are dynamic. Consult with a qualified financial advisor before making any investment decisions.'")
 });
 export type PortfolioSuggestionOutput = z.infer<typeof PortfolioSuggestionOutputSchema>;
 
@@ -75,10 +75,10 @@ Instructions:
     *   Briefly mention the types of general market trends or economic conditions (based on your training data) that influenced your allocation choices. State that your knowledge of "recent trends" is based on your last training data.
     *   Assume a medium to long-term investment horizon (e.g., 5+ years).
 5.  **Disclaimer:**
-    *   CRITICAL: Ensure the 'importantDisclaimer' field is populated with the standard disclaimer provided in the schema.
+    *   CRITICAL: The 'importantDisclaimer' field in your JSON output MUST be populated with the following exact text: "IMPORTANT: This is an AI-generated portfolio suggestion for informational and educational purposes only. It is NOT financial advice. All investments carry risk, and past performance does not guarantee future results. Market conditions are dynamic. Consult with a qualified financial advisor before making any investment decisions." Failure to include this exact text in the 'importantDisclaimer' field will render the output unusable.
 
 Output Format:
-You MUST strictly adhere to the JSON schema provided for 'PortfolioSuggestionOutputSchema'. Ensure all percentages sum to 100, rationale is provided for each asset class, and the 'importantDisclaimer' field is accurately populated.
+You MUST strictly adhere to the JSON schema provided for 'PortfolioSuggestionOutputSchema'. Ensure all percentages sum to 100, rationale is provided for each asset class, and the 'importantDisclaimer' field is accurately populated with the exact text specified in Instruction 5.
 
 Generate the portfolio suggestion now.
 `,
@@ -122,3 +122,4 @@ const portfolioSuggestionFlow = ai.defineFlow(
     return output;
   }
 );
+
