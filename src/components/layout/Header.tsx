@@ -1,14 +1,15 @@
 
 import Link from 'next/link';
-import { Landmark, Home, Menu, ScrollText, TrendingUp, Newspaper, FileText, History as HistoryIcon, Cpu } from 'lucide-react'; // Added HistoryIcon, Cpu for consistency
+import { Landmark, Home, Menu, FileText, History as HistoryIcon, Cpu, Newspaper, PiggyBank } from 'lucide-react'; // Added PiggyBank
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from '@/components/ui/sheet';
 import { ThemeToggle } from './ThemeToggle';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/stock-prediction', label: 'Stock Valuation Predictor Tool', icon: TrendingUp },
+  { href: '/stock-valuation-predictor', label: 'Stock Valuation Predictor Tool', icon: Cpu },
   { href: '/market-insights', label: 'Market Insights', icon: Newspaper },
+  { href: '/portfolio-calculator', label: 'Portfolio Calculator', icon: PiggyBank }, // New Item
   { href: '/history', label: 'History of Stock Market & Trading', icon: HistoryIcon },
   { href: '/guidelines', label: 'User Guidelines', icon: FileText },
 ];
@@ -40,6 +41,7 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[320px] flex flex-col bg-background p-0">
+              {/* Visually hidden title for accessibility, real title is the logo link */}
               <SheetTitle className="sr-only">StockPro Analytics Navigation Menu</SheetTitle>
               <div className="p-4 border-b">
                 <Link href="/" passHref legacyBehavior>

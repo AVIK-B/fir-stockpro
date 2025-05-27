@@ -6,7 +6,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format, parseISO } from 'date-fns';
-import { CalendarIcon, Loader2, TrendingUp, AlertCircle, Info, Archive as ArchiveIcon, Trash2 as Trash2Icon } from 'lucide-react';
+import { CalendarIcon, Loader2, AlertCircle, Info, Archive as ArchiveIcon, Trash2 as Trash2Icon, Cpu } from 'lucide-react'; // Changed TrendingUp to Cpu
 
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,7 @@ interface StockValuationHistoryItem {
   output: StockPredictionOutput; // Output still refers to predictedPrice internally
 }
 
-const LOCAL_STORAGE_KEY = 'stockValuationHistory_v1'; // Updated key
+const LOCAL_STORAGE_KEY = 'stockValuationHistory_v1'; 
 
 export default function StockValuationPredictorPage() {
   const [valuationResult, setValuationResult] = useState<StockPredictionOutput | null>(null);
@@ -143,14 +143,14 @@ export default function StockValuationPredictorPage() {
   return (
     <div className="space-y-12">
       <PageTitle
-        title="Stock Valuation Predictor"
+        title="Stock Valuation Predictor Tool"
         subtitle="Enter stock option details to get an AI-powered future valuation estimate."
       />
 
       <Card className="max-w-2xl mx-auto shadow-xl">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl text-primary">Valuation Input</CardTitle>
+            <CardTitle className="text-2xl text-primary flex items-center gap-2"><Cpu className="h-6 w-6"/>Valuation Input</CardTitle>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" size="icon" aria-label="About valuation methodology">
@@ -371,7 +371,7 @@ export default function StockValuationPredictorPage() {
         <Card className="max-w-2xl mx-auto shadow-xl mt-12 animate-fadeIn">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl text-primary">
-              <TrendingUp className="h-6 w-6" />
+              <Cpu className="h-6 w-6" />
               Valuation Result
             </CardTitle>
             <CardDescription>AI-generated stock valuation and analysis.</CardDescription>

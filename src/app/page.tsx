@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollText, TrendingUp, Briefcase, Cpu, Newspaper, FileText, Landmark, History as HistoryIcon } from 'lucide-react';
+import { Cpu, Briefcase, Newspaper, FileText, Landmark, History as HistoryIcon, PiggyBank } from 'lucide-react'; // Added PiggyBank
 
 export default function HomePage() {
   return (
@@ -17,15 +17,18 @@ export default function HomePage() {
           Welcome to StockPro Analytics
         </h1>
         <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-foreground/80">
-          Empowering your stock options trading with AI-driven valuations and market insights. 
+          Empowering your stock options trading with AI-driven valuations, market insights, and portfolio suggestions. 
           Make informed decisions using advanced algorithmic analysis.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/stock-prediction">Get Stock Valuation</Link>
+            <Link href="/stock-valuation-predictor">Get Stock Valuation</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/5">
             <Link href="/market-insights">Explore Market Insights</Link>
+          </Button>
+           <Button asChild size="lg" variant="secondary" className="bg-accent hover:bg-accent/90 text-accent-foreground">
+            <Link href="/portfolio-calculator">Portfolio Calculator</Link>
           </Button>
         </div>
       </section>
@@ -73,7 +76,7 @@ export default function HomePage() {
             <div>
               <h3 className="text-xl font-semibold text-primary mb-2">How StockPro Analytics Helps</h3>
               <p className="text-foreground/80 leading-relaxed">
-                StockPro Analytics aims to demystify the complexities of options trading. Our AI-powered tools analyze these critical factors to provide you with data-driven stock valuations and broader market insights, helping you make more informed decisions.
+                StockPro Analytics aims to demystify the complexities of options trading and portfolio construction. Our AI-powered tools analyze critical factors to provide you with data-driven stock valuations, broader market insights, and sample portfolio suggestions, helping you make more informed decisions.
               </p>
             </div>
           </CardContent>
@@ -86,9 +89,9 @@ export default function HomePage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8">
           <FeatureCard
             icon={<Cpu className="h-10 w-10 text-accent" />}
-            title="AI Stock Valuation Predictor"
+            title="Stock Valuation Predictor Tool"
             description="Utilize our AI-powered tool that integrates multiple advanced algorithms to estimate future stock valuations. Get an averaged, data-driven outlook."
-            link="/stock-prediction"
+            link="/stock-valuation-predictor"
             linkLabel="Use Valuation Tool"
           />
           <FeatureCard
@@ -97,6 +100,13 @@ export default function HomePage() {
             description="Gain valuable insights based on current market indicators and historical data. Understand key factors, trends, and potential risks."
             link="/market-insights"
             linkLabel="Get Market Insights"
+          />
+           <FeatureCard
+            icon={<PiggyBank className="h-10 w-10 text-accent" />}
+            title="AI Portfolio Calculator"
+            description="Receive AI-generated portfolio suggestions based on your investment amount and risk tolerance. Visualize potential allocations."
+            link="/portfolio-calculator"
+            linkLabel="Calculate Portfolio"
           />
           <FeatureCard
             icon={<HistoryIcon className="h-10 w-10 text-accent" />}
@@ -119,10 +129,10 @@ export default function HomePage() {
       <section className="py-12 text-center">
          <h2 className="text-3xl font-bold text-primary mb-6">Ready to Elevate Your Trading?</h2>
          <p className="max-w-2xl mx-auto text-lg text-foreground/80 mb-8">
-            Dive into the world of AI-assisted stock option analysis with StockPro Analytics.
+            Dive into the world of AI-assisted stock option analysis and portfolio planning with StockPro Analytics.
          </p>
          <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            <Link href="/stock-prediction">Start Analyzing Now</Link>
+            <Link href="/portfolio-calculator">Start Analyzing Now</Link>
           </Button>
       </section>
     </div>
