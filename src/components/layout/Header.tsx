@@ -7,7 +7,7 @@ import { ThemeToggle } from './ThemeToggle';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/stock-prediction', label: 'Stock Valuation Predictor', icon: TrendingUp },
+  { href: '/stock-prediction', label: 'Stock Valuation Predictor Tool', icon: TrendingUp },
   { href: '/market-insights', label: 'Market Insights', icon: Newspaper },
   { href: '/history', label: 'History of Stock Market & Trading', icon: HistoryIcon },
   { href: '/guidelines', label: 'User Guidelines', icon: FileText },
@@ -39,7 +39,7 @@ export function Header() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[320px] flex flex-col bg-background">
+            <SheetContent side="left" className="w-[300px] sm:w-[320px] flex flex-col bg-background p-0">
               <SheetTitle className="sr-only">StockPro Analytics Navigation Menu</SheetTitle>
               <div className="p-4 border-b">
                 <Link href="/" passHref legacyBehavior>
