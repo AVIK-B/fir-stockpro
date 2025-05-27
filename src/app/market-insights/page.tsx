@@ -1,20 +1,21 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, Lightbulb, AlertCircle, Newspaper, Activity, AlertTriangleIcon, Info } from 'lucide-react';
+import { Loader2, Lightbulb, AlertCircle, Newspaper, Activity, AlertTriangleIcon, Info, Archive as ArchiveIcon, Trash2 as Trash2Icon } from 'lucide-react';
 
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from "@/hooks/use-toast";
 
 import type { MarketInsightsInput, MarketInsightsOutput } from '@/ai/flows/market-insights';
@@ -27,10 +28,20 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface MarketInsightsHistoryItem {
+  id: string;
+  timestamp: string;
+  input: MarketInsightsInput;
+  output: MarketInsightsOutput;
+}
+
+const LOCAL_STORAGE_KEY = 'marketInsightsHistory_v1'; // Added versioning in case schema changes later
+
 export default function MarketInsightsPage() {
   const [insightsResult, setInsightsResult] = useState<MarketInsightsOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [insightsHistory, setInsightsHistory] = useState<MarketInsightsHistoryItem[]>([]);
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
@@ -40,6 +51,20 @@ export default function MarketInsightsPage() {
       pastStockData: '',
     },
   });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedHistory = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (storedHistory) {
+        try {
+          setInsightsHistory(JSON.parse(storedHistory));
+        } catch (e) {
+          console.error("Failed to parse market insights history from localStorage", e);
+          localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear corrupted data
+        }
+      }
+    }
+  }, []);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
@@ -51,6 +76,19 @@ export default function MarketInsightsPage() {
     setIsLoading(false);
     if (result.success && result.data) {
       setInsightsResult(result.data);
+      const newHistoryItem: MarketInsightsHistoryItem = {
+        id: new Date().toISOString() + Math.random().toString(36).substring(2, 15),
+        timestamp: new Date().toLocaleString(),
+        input: data,
+        output: result.data,
+      };
+      setInsightsHistory(prevHistory => {
+        const updatedHistory = [newHistoryItem, ...prevHistory].slice(0, 5); // Keep last 5
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedHistory));
+        }
+        return updatedHistory;
+      });
       toast({
         title: "Insights Generated",
         description: "Market insights have been successfully generated.",
@@ -70,6 +108,14 @@ export default function MarketInsightsPage() {
         variant: "destructive",
       });
     }
+  };
+
+  const handleClearHistory = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+    }
+    setInsightsHistory([]);
+    toast({ title: "Insights History Cleared", description: "Your market insights history has been removed." });
   };
 
   return (
@@ -195,7 +241,59 @@ export default function MarketInsightsPage() {
           </Card>
         </div>
       )}
+
+      {insightsHistory.length > 0 && (
+        <Card className="max-w-3xl mx-auto shadow-xl mt-12">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-xl text-primary">
+              <ArchiveIcon className="h-5 w-5" />
+              Insights History
+            </CardTitle>
+            <Button onClick={handleClearHistory} variant="outline" size="sm" className="ml-auto">
+              <Trash2Icon className="mr-2 h-4 w-4" />
+              Clear History
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[400px] w-full pr-4">
+              <div className="space-y-6">
+                {insightsHistory.map((item) => (
+                  <Card key={item.id} className="shadow-md">
+                    <CardHeader>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        {item.timestamp}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-sm">
+                      <div>
+                        <h4 className="font-semibold text-primary/90 mb-1">Input: Market Indicators</h4>
+                        <p className="text-foreground/70 whitespace-pre-wrap break-words">{item.input.marketIndicators}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-primary/90 mb-1">Input: Past Stock Data</h4>
+                        <p className="text-foreground/70 whitespace-pre-wrap break-words">{item.input.pastStockData}</p>
+                      </div>
+                      <hr/>
+                      <div>
+                        <h4 className="font-semibold text-accent mb-1">Output: Summary</h4>
+                        <p className="text-foreground/80 whitespace-pre-wrap break-words">{item.output.summary}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-accent mb-1">Output: Key Factors</h4>
+                        <p className="text-foreground/80 whitespace-pre-wrap break-words">{item.output.factors}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-accent mb-1">Output: Risks</h4>
+                        <p className="text-foreground/80 whitespace-pre-wrap break-words">{item.output.risks}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
-

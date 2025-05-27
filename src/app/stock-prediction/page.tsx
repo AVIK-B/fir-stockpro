@@ -1,11 +1,12 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { format } from 'date-fns';
-import { CalendarIcon, Loader2, TrendingUp, AlertCircle, Info } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
+import { CalendarIcon, Loader2, TrendingUp, AlertCircle, Info, Archive as ArchiveIcon, Trash2 as Trash2Icon } from 'lucide-react';
 
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Button } from '@/components/ui/button';
@@ -14,17 +15,17 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useToast } from "@/hooks/use-toast";
 
 import type { StockPredictionInput, StockPredictionOutput } from '@/ai/flows/stock-prediction';
 import { handleStockPrediction } from './actions';
 
-// Client-side validation schema
 const formSchema = z.object({
   tickerSymbol: z.string().min(1, "Ticker symbol is required.").max(10, "Ticker symbol is too long (e.g. AAPL)."),
   optionType: z.enum(['call', 'put'], { required_error: "Option type is required."}),
@@ -38,17 +39,27 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface StockPredictionHistoryItem {
+  id: string;
+  timestamp: string;
+  input: StockPredictionInput; // Storing AI input which has date as string
+  output: StockPredictionOutput;
+}
+
+const LOCAL_STORAGE_KEY = 'stockPredictionHistory_v1';
+
 export default function StockPredictionPage() {
   const [predictionResult, setPredictionResult] = useState<StockPredictionOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [predictionHistory, setPredictionHistory] = useState<StockPredictionHistoryItem[]>([]);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       tickerSymbol: '',
-      optionType: undefined, // So placeholder shows
+      optionType: undefined, 
       strikePrice: undefined,
       expiryDate: undefined,
       currentPrice: undefined,
@@ -57,6 +68,20 @@ export default function StockPredictionPage() {
       timeToExpiry: undefined,
     },
   });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedHistory = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (storedHistory) {
+        try {
+          setPredictionHistory(JSON.parse(storedHistory));
+        } catch (e) {
+          console.error("Failed to parse stock prediction history from localStorage", e);
+          localStorage.removeItem(LOCAL_STORAGE_KEY);
+        }
+      }
+    }
+  }, []);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
@@ -73,6 +98,19 @@ export default function StockPredictionPage() {
     setIsLoading(false);
     if (result.success && result.data) {
       setPredictionResult(result.data);
+      const newHistoryItem: StockPredictionHistoryItem = {
+        id: new Date().toISOString() + Math.random().toString(36).substring(2, 15),
+        timestamp: new Date().toLocaleString(),
+        input: inputForAI,
+        output: result.data,
+      };
+      setPredictionHistory(prevHistory => {
+        const updatedHistory = [newHistoryItem, ...prevHistory].slice(0, 5); // Keep last 5
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedHistory));
+        }
+        return updatedHistory;
+      });
       toast({
         title: "Prediction Successful",
         description: "Stock price prediction has been generated.",
@@ -80,7 +118,6 @@ export default function StockPredictionPage() {
     } else {
       setError(result.error || "An unknown error occurred.");
       if (result.fieldErrors) {
-        // Optionally set field errors using form.setError
         Object.entries(result.fieldErrors).forEach(([field, fieldError]) => {
           if (field !== "_errors" && fieldError?._errors?.[0]) {
              form.setError(field as keyof FormValues, { type: 'server', message: fieldError._errors[0] });
@@ -93,6 +130,14 @@ export default function StockPredictionPage() {
         variant: "destructive",
       });
     }
+  };
+  
+  const handleClearHistory = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+    }
+    setPredictionHistory([]);
+    toast({ title: "Prediction History Cleared", description: "Your stock prediction history has been removed." });
   };
 
   return (
@@ -230,7 +275,7 @@ export default function StockPredictionPage() {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() -1)) } // Disable past dates
+                            disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() -1)) } 
                             initialFocus
                           />
                         </PopoverContent>
@@ -344,6 +389,53 @@ export default function StockPredictionPage() {
                 {predictionResult.analysis}
               </p>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {predictionHistory.length > 0 && (
+        <Card className="max-w-3xl mx-auto shadow-xl mt-12">
+          <CardHeader className="flex flex-row items-center justify-between">
+             <CardTitle className="flex items-center gap-2 text-xl text-primary">
+                <ArchiveIcon className="h-5 w-5" />
+                Prediction History
+            </CardTitle>
+            <Button onClick={handleClearHistory} variant="outline" size="sm" className="ml-auto">
+                <Trash2Icon className="mr-2 h-4 w-4" />
+                Clear History
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[400px] w-full pr-4">
+              <div className="space-y-6">
+                {predictionHistory.map((item) => (
+                  <Card key={item.id} className="shadow-md">
+                    <CardHeader>
+                       <CardDescription className="text-xs text-muted-foreground">
+                        {item.timestamp}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 text-sm">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        <div><strong className="text-primary/90">Ticker:</strong> {item.input.tickerSymbol}</div>
+                        <div><strong className="text-primary/90">Option Type:</strong> {item.input.optionType}</div>
+                        <div><strong className="text-primary/90">Strike Price:</strong> ${item.input.strikePrice.toFixed(2)}</div>
+                        <div><strong className="text-primary/90">Current Price:</strong> ${item.input.currentPrice.toFixed(2)}</div>
+                        <div><strong className="text-primary/90">Expiry:</strong> {format(parseISO(item.input.expiryDate), "PPP")}</div>
+                        <div><strong className="text-primary/90">Volatility:</strong> {(item.input.volatility * 100).toFixed(1)}%</div>
+                        <div><strong className="text-primary/90">Risk-Free Rate:</strong> {(item.input.riskFreeRate * 100).toFixed(1)}%</div>
+                        <div><strong className="text-primary/90">Time to Expiry:</strong> {item.input.timeToExpiry.toFixed(2)} yrs</div>
+                      </div>
+                      <hr />
+                      <div>
+                        <h4 className="font-semibold text-accent mb-1">Predicted Price: ${item.output.predictedPrice.toFixed(2)}</h4>
+                        <p className="text-foreground/80 whitespace-pre-wrap break-words">{item.output.analysis}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
           </CardContent>
         </Card>
       )}
