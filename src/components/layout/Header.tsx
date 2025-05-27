@@ -7,9 +7,9 @@ import { ThemeToggle } from './ThemeToggle';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/stock-prediction', label: 'Stock Prediction', icon: TrendingUp }, // TrendingUp is fine here
+  { href: '/stock-prediction', label: 'Stock Prediction', icon: TrendingUp },
   { href: '/market-insights', label: 'Market Insights', icon: Newspaper },
-  { href: '/history', label: 'Trading History', icon: HistoryIcon }, // Using HistoryIcon
+  { href: '/history', label: 'Stock Market History', icon: HistoryIcon },
   { href: '/guidelines', label: 'User Guidelines', icon: FileText },
 ];
 
@@ -83,3 +83,4 @@ export function Header() {
     </header>
   );
 }
+

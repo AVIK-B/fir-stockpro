@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollText, TrendingUp, Briefcase, Cpu, Newspaper, FileText, Landmark } from 'lucide-react';
+import { ScrollText, TrendingUp, Briefcase, Cpu, Newspaper, FileText, Landmark, History as HistoryIcon } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -99,8 +99,8 @@ export default function HomePage() {
             linkLabel="Get Market Insights"
           />
           <FeatureCard
-            icon={<ScrollText className="h-10 w-10 text-accent" />}
-            title="Trading History"
+            icon={<HistoryIcon className="h-10 w-10 text-accent" />}
+            title="Stock Market History"
             description="Explore pivotal moments, legendary rivalries, and transformative crises that shaped modern stock markets and investing."
             link="/history"
             linkLabel="View History"
@@ -157,3 +157,4 @@ function FeatureCard({ icon, title, description, link, linkLabel }: FeatureCardP
     </Card>
   );
 }
+
