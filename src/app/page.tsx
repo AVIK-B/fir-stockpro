@@ -22,7 +22,7 @@ export default function HomePage() {
         </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/stock-valuation-predictor">Get Stock Valuation</Link>
+            <Link href="/stock-valuation-predictor">Predict Stock Valuation</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/5">
             <Link href="/market-insights">Explore Market Insights</Link>
@@ -167,3 +167,4 @@ function FeatureCard({ icon, title, description, link, linkLabel }: FeatureCardP
     </Card>
   );
 }
+
