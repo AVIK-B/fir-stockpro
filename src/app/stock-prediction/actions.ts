@@ -1,3 +1,4 @@
+
 'use server';
 import { predictStockPrice, type StockPredictionInput, type StockPredictionOutput } from '@/ai/flows/stock-prediction';
 import { z } from 'zod';
@@ -32,8 +33,8 @@ export async function handleStockPrediction(
     const result = await predictStockPrice(validatedFields.data as StockPredictionInput);
     return { success: true, data: result };
   } catch (error) {
-    console.error("Stock prediction error:", error);
+    console.error("Stock valuation error:", error); // Updated log
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
-    return { success: false, error: `Failed to get stock prediction: ${errorMessage}` };
+    return { success: false, error: `Failed to get stock valuation: ${errorMessage}` }; // Updated error message
   }
 }

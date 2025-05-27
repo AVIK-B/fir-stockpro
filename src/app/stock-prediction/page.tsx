@@ -39,20 +39,20 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface StockPredictionHistoryItem {
+interface StockValuationHistoryItem {
   id: string;
   timestamp: string;
   input: StockPredictionInput; // Storing AI input which has date as string
-  output: StockPredictionOutput;
+  output: StockPredictionOutput; // Output still refers to predictedPrice internally
 }
 
-const LOCAL_STORAGE_KEY = 'stockPredictionHistory_v1';
+const LOCAL_STORAGE_KEY = 'stockValuationHistory_v1'; // Updated key
 
-export default function StockPredictionPage() {
-  const [predictionResult, setPredictionResult] = useState<StockPredictionOutput | null>(null);
+export default function StockValuationPredictorPage() {
+  const [valuationResult, setValuationResult] = useState<StockPredictionOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [predictionHistory, setPredictionHistory] = useState<StockPredictionHistoryItem[]>([]);
+  const [valuationHistory, setValuationHistory] = useState<StockValuationHistoryItem[]>([]);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -74,9 +74,9 @@ export default function StockPredictionPage() {
       const storedHistory = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedHistory) {
         try {
-          setPredictionHistory(JSON.parse(storedHistory));
+          setValuationHistory(JSON.parse(storedHistory));
         } catch (e) {
-          console.error("Failed to parse stock prediction history from localStorage", e);
+          console.error("Failed to parse stock valuation history from localStorage", e);
           localStorage.removeItem(LOCAL_STORAGE_KEY);
         }
       }
@@ -86,7 +86,7 @@ export default function StockPredictionPage() {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
     setError(null);
-    setPredictionResult(null);
+    setValuationResult(null);
 
     const inputForAI: StockPredictionInput = {
       ...data,
@@ -97,14 +97,14 @@ export default function StockPredictionPage() {
 
     setIsLoading(false);
     if (result.success && result.data) {
-      setPredictionResult(result.data);
-      const newHistoryItem: StockPredictionHistoryItem = {
+      setValuationResult(result.data);
+      const newHistoryItem: StockValuationHistoryItem = {
         id: new Date().toISOString() + Math.random().toString(36).substring(2, 15),
         timestamp: new Date().toLocaleString(),
         input: inputForAI,
         output: result.data,
       };
-      setPredictionHistory(prevHistory => {
+      setValuationHistory(prevHistory => {
         const updatedHistory = [newHistoryItem, ...prevHistory].slice(0, 5); // Keep last 5
         if (typeof window !== 'undefined') {
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedHistory));
@@ -112,8 +112,8 @@ export default function StockPredictionPage() {
         return updatedHistory;
       });
       toast({
-        title: "Prediction Successful",
-        description: "Stock price prediction has been generated.",
+        title: "Valuation Successful",
+        description: "Stock valuation has been generated.",
       });
     } else {
       setError(result.error || "An unknown error occurred.");
@@ -125,8 +125,8 @@ export default function StockPredictionPage() {
         });
       }
       toast({
-        title: "Prediction Failed",
-        description: result.error || "Could not generate prediction.",
+        title: "Valuation Failed",
+        description: result.error || "Could not generate valuation.",
         variant: "destructive",
       });
     }
@@ -136,60 +136,60 @@ export default function StockPredictionPage() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
-    setPredictionHistory([]);
-    toast({ title: "Prediction History Cleared", description: "Your stock prediction history has been removed." });
+    setValuationHistory([]);
+    toast({ title: "Valuation History Cleared", description: "Your stock valuation history has been removed." });
   };
 
   return (
     <div className="space-y-12">
       <PageTitle
-        title="Algorithmic Stock Prediction"
-        subtitle="Enter stock option details to get an AI-powered future price prediction."
+        title="Stock Valuation Predictor"
+        subtitle="Enter stock option details to get an AI-powered future valuation estimate."
       />
 
       <Card className="max-w-2xl mx-auto shadow-xl">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl text-primary">Prediction Input</CardTitle>
+            <CardTitle className="text-2xl text-primary">Valuation Input</CardTitle>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="About prediction methodology">
+                <Button variant="outline" size="icon" aria-label="About valuation methodology">
                   <Info className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
-                  <DialogTitle>Prediction Methodology</DialogTitle>
+                  <DialogTitle>Valuation Methodology</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-3 py-2 text-sm">
                   <p>
-                    Our AI-powered stock price predictions are generated by a sophisticated model that analyzes the input parameters you provide.
+                    Our AI-powered stock valuation estimates are generated by a sophisticated model that analyzes the input parameters you provide.
                   </p>
                   <p>
                     The model considers principles from several analytical approaches:
                   </p>
                   <ul className="list-disc pl-5 space-y-1">
                     <li>
-                      <strong>Time-Series Analysis Concepts:</strong> The AI incorporates an understanding of how past price trends and seasonality (if inferable from context) can influence future prices.
+                      <strong>Time-Series Analysis Concepts:</strong> The AI incorporates an understanding of how past price trends and seasonality (if inferable from context) can influence future valuations.
                     </li>
                     <li>
-                      <strong>Volatility Insights:</strong> The provided volatility figure is a key input, helping the AI assess the potential range and likelihood of price movements.
+                      <strong>Volatility Insights:</strong> The provided volatility figure is a key input, helping the AI assess the potential range and likelihood of price movements affecting valuation.
                     </li>
                     <li>
-                      <strong>Option Pricing Theory:</strong> The AI leverages its knowledge of how factors central to models like the Black-Scholes-Merton (e.g., strike price, time to expiry, current stock price, risk-free rate, volatility) interact to determine option values and imply future stock price expectations.
+                      <strong>Option Pricing Theory:</strong> The AI leverages its knowledge of how factors central to models like the Black-Scholes-Merton (e.g., strike price, time to expiry, current stock price, risk-free rate, volatility) interact to determine option values and imply future stock valuation expectations.
                     </li>
                     <li>
-                      <strong>Contextual Understanding:</strong> The AI uses the ticker symbol and current price to place the prediction within a broader market context.
+                      <strong>Contextual Understanding:</strong> The AI uses the ticker symbol and current price to place the valuation within a broader market context.
                     </li>
                   </ul>
                   <p>
-                    The predicted price and accompanying analysis represent a synthesized output from these considerations. Please remember that these are AI-generated estimations for informational purposes and do not constitute financial advice.
+                    The estimated valuation and accompanying analysis represent a synthesized output from these considerations. Please remember that these are AI-generated estimations for informational purposes and do not constitute financial advice.
                   </p>
                 </div>
               </DialogContent>
             </Dialog>
           </div>
-          <CardDescription>Fill in the details below to generate a prediction.</CardDescription>
+          <CardDescription>Fill in the details below to generate a valuation estimate.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -348,10 +348,10 @@ export default function StockPredictionPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating Prediction...
+                    Generating Valuation...
                   </>
                 ) : (
-                  "Get Prediction"
+                  "Get Valuation"
                 )}
               </Button>
             </form>
@@ -367,38 +367,38 @@ export default function StockPredictionPage() {
         </Alert>
       )}
 
-      {predictionResult && (
+      {valuationResult && (
         <Card className="max-w-2xl mx-auto shadow-xl mt-12 animate-fadeIn">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl text-primary">
               <TrendingUp className="h-6 w-6" />
-              Prediction Result
+              Valuation Result
             </CardTitle>
-            <CardDescription>AI-generated stock price prediction and analysis.</CardDescription>
+            <CardDescription>AI-generated stock valuation and analysis.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Predicted Stock Price</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Estimated Stock Valuation</Label>
               <p className="text-3xl font-bold text-accent">
-                ${predictionResult.predictedPrice.toFixed(2)}
+                ${valuationResult.predictedPrice.toFixed(2)} 
               </p>
             </div>
             <div>
               <Label className="text-sm font-medium text-muted-foreground">Analysis</Label>
               <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">
-                {predictionResult.analysis}
+                {valuationResult.analysis}
               </p>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {predictionHistory.length > 0 && (
+      {valuationHistory.length > 0 && (
         <Card className="max-w-3xl mx-auto shadow-xl mt-12">
           <CardHeader className="flex flex-row items-center justify-between">
              <CardTitle className="flex items-center gap-2 text-xl text-primary">
                 <ArchiveIcon className="h-5 w-5" />
-                Prediction History
+                Valuation History
             </CardTitle>
             <Button onClick={handleClearHistory} variant="outline" size="sm" className="ml-auto">
                 <Trash2Icon className="mr-2 h-4 w-4" />
@@ -408,7 +408,7 @@ export default function StockPredictionPage() {
           <CardContent>
             <ScrollArea className="h-[400px] w-full pr-4">
               <div className="space-y-6">
-                {predictionHistory.map((item) => (
+                {valuationHistory.map((item) => (
                   <Card key={item.id} className="shadow-md">
                     <CardHeader>
                        <CardDescription className="text-xs text-muted-foreground">
@@ -428,7 +428,7 @@ export default function StockPredictionPage() {
                       </div>
                       <hr />
                       <div>
-                        <h4 className="font-semibold text-accent mb-1">Predicted Price: ${item.output.predictedPrice.toFixed(2)}</h4>
+                        <h4 className="font-semibold text-accent mb-1">Estimated Valuation: ${item.output.predictedPrice.toFixed(2)}</h4>
                         <p className="text-foreground/80 whitespace-pre-wrap break-words">{item.output.analysis}</p>
                       </div>
                     </CardContent>

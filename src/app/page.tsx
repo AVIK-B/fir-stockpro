@@ -17,12 +17,12 @@ export default function HomePage() {
           Welcome to StockPro Analytics
         </h1>
         <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-foreground/80">
-          Empowering your stock options trading with AI-driven predictions and market insights. 
+          Empowering your stock options trading with AI-driven valuations and market insights. 
           Make informed decisions using advanced algorithmic analysis.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/stock-prediction">Get Stock Prediction</Link>
+            <Link href="/stock-prediction">Get Stock Valuation</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/5">
             <Link href="/market-insights">Explore Market Insights</Link>
@@ -73,7 +73,7 @@ export default function HomePage() {
             <div>
               <h3 className="text-xl font-semibold text-primary mb-2">How StockPro Analytics Helps</h3>
               <p className="text-foreground/80 leading-relaxed">
-                StockPro Analytics aims to demystify the complexities of options trading. Our AI-powered tools analyze these critical factors to provide you with data-driven stock price predictions and broader market insights, helping you make more informed decisions.
+                StockPro Analytics aims to demystify the complexities of options trading. Our AI-powered tools analyze these critical factors to provide you with data-driven stock valuations and broader market insights, helping you make more informed decisions.
               </p>
             </div>
           </CardContent>
@@ -86,10 +86,10 @@ export default function HomePage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8">
           <FeatureCard
             icon={<Cpu className="h-10 w-10 text-accent" />}
-            title="AI Stock Prediction"
-            description="Utilize our AI-powered tool that integrates multiple advanced algorithms to predict future stock prices. Get an averaged, data-driven outlook."
+            title="AI Stock Valuation Predictor"
+            description="Utilize our AI-powered tool that integrates multiple advanced algorithms to estimate future stock valuations. Get an averaged, data-driven outlook."
             link="/stock-prediction"
-            linkLabel="Try Prediction Tool"
+            linkLabel="Use Valuation Tool"
           />
           <FeatureCard
             icon={<Newspaper className="h-10 w-10 text-accent" />}

@@ -130,9 +130,9 @@ export default function MarketInsightsPage() {
         <AlertTitle>Understanding Market Insights</AlertTitle>
         <AlertDescription>
           This tool provides analysis of broader market trends and economic indicators. 
-          For predictions on specific stocks (e.g., future price of AAPL), please use the {' '}
+          For valuations of specific stocks (e.g., future price of AAPL), please use the {' '}
           <Link href="/stock-prediction" className="font-semibold text-primary hover:underline">
-            Stock Prediction tool
+            Stock Valuation Predictor tool
           </Link>.
         </AlertDescription>
       </Alert>

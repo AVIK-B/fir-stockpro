@@ -1,9 +1,10 @@
-// StockPro Analytics Stock Prediction Flow
+
+// StockPro Analytics Stock Valuation Flow
 'use server';
 /**
- * @fileOverview Predicts future stock prices based on various algorithmic analyses.
+ * @fileOverview Estimates future stock valuations based on various algorithmic analyses.
  *
- * - predictStockPrice - A function that handles the stock price prediction process.
+ * - predictStockPrice - A function that handles the stock valuation process.
  * - StockPredictionInput - The input type for the predictStockPrice function.
  * - StockPredictionOutput - The return type for the predictStockPrice function.
  */
@@ -24,21 +25,23 @@ const StockPredictionInputSchema = z.object({
 export type StockPredictionInput = z.infer<typeof StockPredictionInputSchema>;
 
 const StockPredictionOutputSchema = z.object({
-  predictedPrice: z.number().describe('The predicted future stock price.'),
-  analysis: z.string().describe('A brief analysis of the prediction, explaining the methodology.'),
+  predictedPrice: z.number().describe('The estimated future stock valuation.'),
+  analysis: z.string().describe('A brief analysis of the valuation, explaining the methodology.'),
 });
 export type StockPredictionOutput = z.infer<typeof StockPredictionOutputSchema>;
 
+// Note: Function name `predictStockPrice` is kept for internal consistency to avoid breaking changes with how it's called.
+// The user-facing text and prompt semantics have been updated to "valuation".
 export async function predictStockPrice(input: StockPredictionInput): Promise<StockPredictionOutput> {
   return stockPredictionFlow(input);
 }
 
 const stockPredictionPrompt = ai.definePrompt({
-  name: 'stockPredictionPrompt',
+  name: 'stockValuationPrompt', // Updated name
   input: {schema: StockPredictionInputSchema},
   output: {schema: StockPredictionOutputSchema},
-  prompt: `You are a financial analyst specializing in stock option pricing.
-Given the following information, predict the future stock price:
+  prompt: `You are a financial analyst specializing in stock option valuation.
+Given the following information, estimate the future stock valuation:
 
 Ticker Symbol: {{{tickerSymbol}}}
 Option Type: {{{optionType}}}
@@ -49,20 +52,20 @@ Volatility: {{{volatility}}}
 Risk-Free Rate: {{{riskFreeRate}}}
 Time to Expiry: {{{timeToExpiry}}}
 
-Provide a predicted future stock price.
+Provide an estimated future stock valuation.
 
-For the 'analysis' field, explain that the prediction is derived from a sophisticated AI model that synthesizes information by considering principles from various analytical approaches. This includes:
--   Time-Series Analysis: Incorporating patterns and trends from historical data (if available/implied by context).
--   Volatility Modeling: Assessing risk and potential price swings based on the provided volatility.
--   Option Pricing Factors: Considering how factors like strike price, time to expiry, and risk-free rate influence option valuation and implied future stock prices, drawing from established financial theories.
--   Market Context: The AI also factors in the broader market information provided (current price, ticker symbol representing a specific company/sector).
-The final prediction is a result of this multi-faceted analysis. Conclude the analysis by emphasizing that this is an AI-generated estimation and not financial advice.
+For the 'analysis' field, explain that the valuation is derived from a sophisticated AI model that synthesizes information by considering principles from various analytical approaches. This includes:
+-   Time-Series Analysis: Incorporating patterns and trends from historical data (if available/implied by context) to inform valuation.
+-   Volatility Modeling: Assessing risk and potential price swings based on the provided volatility, which impacts the valuation.
+-   Option Pricing Factors: Considering how factors like strike price, time to expiry, and risk-free rate influence option valuation and implied future stock valuations, drawing from established financial theories.
+-   Market Context: The AI also factors in the broader market information provided (current price, ticker symbol representing a specific company/sector) for a comprehensive valuation.
+The final valuation is a result of this multi-faceted analysis. Conclude the analysis by emphasizing that this is an AI-generated estimation and not financial advice.
 `,
 });
 
 const stockPredictionFlow = ai.defineFlow(
   {
-    name: 'stockPredictionFlow',
+    name: 'stockValuationFlow', // Updated name
     inputSchema: StockPredictionInputSchema,
     outputSchema: StockPredictionOutputSchema,
   },

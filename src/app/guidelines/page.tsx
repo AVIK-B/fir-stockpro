@@ -1,7 +1,7 @@
 
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb, AlertTriangle, TrendingUp, FileText, Activity } from 'lucide-react';
+import { Lightbulb, AlertTriangle, TrendingUp, FileText, Activity, Newspaper as FileSearch } from 'lucide-react';
 
 export default function GuidelinesPage() {
   return (
@@ -20,10 +20,10 @@ export default function GuidelinesPage() {
         </CardHeader>
         <CardContent className="space-y-4 text-foreground/80 leading-relaxed">
           <p>
-            Welcome to StockPro Analytics! Our platform provides AI-powered tools to assist you in analyzing stock options and market trends. These guidelines will help you understand how to use our prediction tools and interpret the results effectively.
+            Welcome to StockPro Analytics! Our platform provides AI-powered tools to assist you in analyzing stock options and market trends. These guidelines will help you understand how to use our valuation and insights tools effectively.
           </p>
           <p>
-            Our tools are designed to supplement your own research and analysis, not replace it. The stock market is inherently volatile, and predictions are not guarantees of future performance.
+            Our tools are designed to supplement your own research and analysis, not replace it. The stock market is inherently volatile, and estimations are not guarantees of future performance.
           </p>
         </CardContent>
       </Card>
@@ -32,12 +32,12 @@ export default function GuidelinesPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl text-primary">
             <TrendingUp className="h-6 w-6" />
-            Using the Stock Prediction Tool
+            Using the Stock Valuation Predictor Tool
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-foreground/80 leading-relaxed">
           <p>
-            The Stock Prediction Tool uses multiple algorithms to forecast potential future stock prices. To use it:
+            The Stock Valuation Predictor Tool uses multiple algorithms to estimate potential future stock valuations. To use it:
           </p>
           <ul className="list-disc list-inside space-y-2 pl-4">
             <li><strong>Ticker Symbol:</strong> Enter the stock's ticker (e.g., AAPL for Apple Inc.).</li>
@@ -50,7 +50,7 @@ export default function GuidelinesPage() {
             <li><strong>Time to Expiry (Years):</strong> The time remaining until the option expires, in years (e.g., 0.25 for 3 months).</li>
           </ul>
           <p>
-            After submitting the form, the tool will provide a predicted price and a brief analysis. This prediction is an average derived from various algorithmic models.
+            After submitting the form, the tool will provide an estimated valuation and a brief analysis. This valuation is an average derived from various algorithmic models.
           </p>
         </CardContent>
       </Card>
@@ -58,7 +58,7 @@ export default function GuidelinesPage() {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl text-primary">
-            <Activity className="h-6 w-6" />
+            <FileSearch className="h-6 w-6" />
             Using the AI Market Insights Tool
           </CardTitle>
         </CardHeader>
@@ -85,7 +85,7 @@ export default function GuidelinesPage() {
         </CardHeader>
         <CardContent className="space-y-4 text-destructive/90 leading-relaxed">
           <p>
-            <strong>Not Financial Advice:</strong> The information and predictions provided by StockPro Analytics are for informational and educational purposes only. They do not constitute financial, investment, or trading advice.
+            <strong>Not Financial Advice:</strong> The information and estimations provided by StockPro Analytics are for informational and educational purposes only. They do not constitute financial, investment, or trading advice.
           </p>
           <p>
             <strong>Risk of Loss:</strong> Trading stock options involves significant risk of loss and is not suitable for all investors. You could lose more than your initial investment.
@@ -97,7 +97,7 @@ export default function GuidelinesPage() {
             <strong>Do Your Own Research:</strong> Always conduct your own thorough research and consider multiple sources of information before making any investment decisions. Consult with a qualified financial advisor.
           </p>
           <p>
-            <strong>Accuracy Not Guaranteed:</strong> While we strive for accuracy, we cannot guarantee the completeness or correctness of the data or predictions provided.
+            <strong>Accuracy Not Guaranteed:</strong> While we strive for accuracy, we cannot guarantee the completeness or correctness of the data or estimations provided.
           </p>
         </CardContent>
       </Card>
