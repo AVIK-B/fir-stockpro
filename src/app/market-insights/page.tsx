@@ -1,10 +1,12 @@
+
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, Lightbulb, AlertCircle, Newspaper, Activity, AlertTriangleIcon } from 'lucide-react';
+import { Loader2, Lightbulb, AlertCircle, Newspaper, Activity, AlertTriangleIcon, Info } from 'lucide-react';
 
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Button } from '@/components/ui/button';
@@ -76,6 +78,18 @@ export default function MarketInsightsPage() {
         title="AI-Driven Market Insights"
         subtitle="Enter market indicators and past stock data to get AI-generated analysis."
       />
+
+      <Alert className="max-w-2xl mx-auto">
+        <Info className="h-4 w-4" />
+        <AlertTitle>Understanding Market Insights</AlertTitle>
+        <AlertDescription>
+          This tool provides analysis of broader market trends and economic indicators. 
+          For predictions on specific stocks (e.g., future price of AAPL), please use the {' '}
+          <Link href="/stock-prediction" className="font-semibold text-primary hover:underline">
+            Stock Prediction tool
+          </Link>.
+        </AlertDescription>
+      </Alert>
 
       <Card className="max-w-2xl mx-auto shadow-xl">
         <CardHeader>
@@ -184,3 +198,4 @@ export default function MarketInsightsPage() {
     </div>
   );
 }
+
