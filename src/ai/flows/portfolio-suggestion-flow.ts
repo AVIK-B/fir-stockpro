@@ -59,7 +59,7 @@ Instructions:
     *   Adjust aggressiveness based on risk tolerance:
         *   Low Risk: Higher allocation to bonds, cash/money market. Lower allocation to equities, especially emerging markets or high-yield bonds.
         *   Medium Risk: Balanced allocation between equities and fixed income. Moderate exposure to growth assets.
-        *   High Risk: Higher allocation to equities, including emerging markets or thematic investments (like tech-focused ETFs if appropriate). Lower allocation to traditional bonds. May include a small, clearly justified allocation to more volatile assets like cryptocurrencies if risk is 'High' and rationale is very strong.
+        *   High Risk: Higher allocation to equities, including emerging markets or thematic investments (like tech-focused ETFs if appropriate). Lower allocation to traditional bonds. May include a small, clearly justified allocation to more volatile assets if risk is 'High' and rationale is very strong.
 2.  **Projected Return Range:**
     *   Provide a realistic and plausible *annual* return percentage range (low and high end) for the suggested portfolio.
     *   This range should be an estimate based on historical performance of such asset mixes and general market expectations, adjusted for the specified risk tolerance. Emphasize this is not a guarantee.
@@ -116,6 +116,23 @@ const portfolioSuggestionFlow = ai.defineFlow(
     if(!output.importantDisclaimer || !output.importantDisclaimer.includes("NOT financial advice")) {
         throw new Error("AI response is missing the critical financial advice disclaimer.");
     }
+
+    // Enhanced check for projectedReturnRange
+    if (!output.projectedReturnRange || 
+        typeof output.projectedReturnRange.low !== 'number' || 
+        typeof output.projectedReturnRange.high !== 'number') {
+      throw new Error("AI failed to generate a valid projected return range. Please check your input values or try again.");
+    }
+    if (output.projectedReturnRange.low > output.projectedReturnRange.high) {
+      // It's possible low and high could be equal, but low should not be greater than high.
+      // If low could legitimately be higher in some very rare scenario (e.g. inverse ETFs with specific strategies),
+      // this check might need adjustment, but for general portfolio projection, high should be >= low.
+      console.warn(`AI generated an unusual projected return range: low ${output.projectedReturnRange.low}, high ${output.projectedReturnRange.high}. Proceeding, but this might indicate an issue with AI's reasoning.`);
+      // Depending on strictness, you might throw an error here:
+      // throw new Error("AI generated an invalid projected return range (low is greater than high). Please try again.");
+    }
+    
     return output;
   }
 );
+
