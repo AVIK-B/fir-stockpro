@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview This file defines a Genkit flow for providing AI-driven market insights.
@@ -59,6 +60,23 @@ const marketInsightsFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    
+    if (!output) {
+      throw new Error("The AI model did not return any analysis. Please try rephrasing your input, providing more detail for both fields, or check if the topic is permissible.");
+    }
+
+    // Check for meaningful content in each part of the output
+    if (typeof output.summary !== 'string' || output.summary.trim() === '') {
+        throw new Error("The AI model failed to generate a market summary. Please ensure your input for both market indicators and past stock data is clear and provides sufficient context.");
+    }
+    if (typeof output.factors !== 'string' || output.factors.trim() === '') {
+        throw new Error("The AI model failed to identify key influencing factors. Please ensure your input for both market indicators and past stock data is clear and provides sufficient context.");
+    }
+    if (typeof output.risks !== 'string' || output.risks.trim() === '') {
+        throw new Error("The AI model failed to outline potential risks. Please ensure your input for both market indicators and past stock data is clear and provides sufficient context.");
+    }
+    
+    return output;
   }
 );
+
