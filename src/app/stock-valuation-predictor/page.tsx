@@ -404,7 +404,7 @@ export default function StockValuationPredictorPage() {
           <CardHeader className="flex flex-row items-center justify-between">
              <CardTitle className="flex items-center gap-2 text-xl text-primary">
                 <ArchiveIcon className="h-5 w-5" />
-                Valuation History
+                User Input History
             </CardTitle>
             <Button onClick={handleClearHistory} variant="outline" size="sm" className="ml-auto">
                 <Trash2Icon className="mr-2 h-4 w-4" />
