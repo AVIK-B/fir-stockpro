@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Landmark, Home, BookOpen, BarChartBig, FileSearch, Menu, ScrollText, TrendingUp, Briefcase, ShieldCheck, Cpu, Newspaper, Activity, AlertTriangleIcon, Info, Lightbulb, AlertTriangle, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ThemeToggle } from './ThemeToggle';
 
 const navItems = [
@@ -45,20 +45,28 @@ export function Header() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[320px] pt-10 bg-background">
-               <Link href="/" passHref legacyBehavior>
-                  <a className="flex items-center gap-2 text-lg font-bold text-primary mb-6 px-4">
+            <SheetContent side="right" className="w-[300px] sm:w-[320px] p-0 flex flex-col bg-background">
+              <SheetHeader className="p-4 border-b">
+                {/* Programmatic title for accessibility */}
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                {/* Visual header/branding for the sheet */}
+                <Link href="/" passHref legacyBehavior>
+                  <a className="flex items-center gap-2 text-lg font-bold text-primary">
                     <Landmark className="h-6 w-6" />
                     <span>StockPro Analytics</span>
                   </a>
                 </Link>
-              <nav className="flex flex-col space-y-2">
-                {navItems.map((item) => (
-                   <SheetClose asChild key={item.href}>
-                     <NavLink {...item} />
-                   </SheetClose>
-                ))}
-              </nav>
+              </SheetHeader>
+              
+              <div className="flex-grow overflow-y-auto p-4"> {/* Wrapper for scrollable content */}
+                <nav className="flex flex-col space-y-2">
+                  {navItems.map((item) => (
+                     <SheetClose asChild key={item.href}>
+                       <NavLink {...item} />
+                     </SheetClose>
+                  ))}
+                </nav>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
