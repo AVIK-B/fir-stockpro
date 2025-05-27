@@ -3,13 +3,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, BarChartBig, FileSearch, BookOpen, TrendingUp, Briefcase, ShieldCheck, Cpu } from 'lucide-react';
+import { ScrollText, TrendingUp, Briefcase, Cpu, Newspaper, FileText, Landmark } from 'lucide-react';
 
 export default function HomePage() {
   return (
     <div className="space-y-16">
       {/* Hero Section */}
       <section className="text-center py-12 md:py-20">
+        <div className="mb-8">
+          <Landmark className="h-20 w-20 text-primary mx-auto" />
+        </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-primary">
           Welcome to StockPro Analytics
         </h1>
@@ -80,7 +83,7 @@ export default function HomePage() {
       {/* Features Section */}
       <section className="py-12">
         <h2 className="text-3xl font-bold text-center text-primary mb-12">Our Core Features</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8">
           <FeatureCard
             icon={<Cpu className="h-10 w-10 text-accent" />}
             title="AI Stock Prediction"
@@ -89,14 +92,21 @@ export default function HomePage() {
             linkLabel="Try Prediction Tool"
           />
           <FeatureCard
-            icon={<FileSearch className="h-10 w-10 text-accent" />}
+            icon={<Newspaper className="h-10 w-10 text-accent" />}
             title="AI Market Insights"
             description="Gain valuable insights based on current market indicators and historical data. Understand key factors, trends, and potential risks."
             link="/market-insights"
             linkLabel="Get Market Insights"
           />
           <FeatureCard
-            icon={<BookOpen className="h-10 w-10 text-accent" />}
+            icon={<ScrollText className="h-10 w-10 text-accent" />}
+            title="Trading History"
+            description="Explore pivotal moments, legendary rivalries, and transformative crises that shaped modern stock markets and investing."
+            link="/history"
+            linkLabel="View History"
+          />
+          <FeatureCard
+            icon={<FileText className="h-10 w-10 text-accent" />}
             title="User Guidelines"
             description="Clear and concise guidelines on how to effectively use our tools and interpret the results for your trading strategies."
             link="/guidelines"

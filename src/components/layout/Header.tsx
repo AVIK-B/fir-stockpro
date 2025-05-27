@@ -1,21 +1,23 @@
+
 import Link from 'next/link';
-import { Landmark, Home, BookOpen, BarChartBig, FileSearch, Menu } from 'lucide-react';
+import { Landmark, Home, BookOpen, BarChartBig, FileSearch, Menu, ScrollText, TrendingUp, Briefcase, ShieldCheck, Cpu, Newspaper, Activity, AlertTriangleIcon, Info, Lightbulb, AlertTriangle, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { ThemeToggle } from './ThemeToggle';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/stock-prediction', label: 'Stock Prediction', icon: BarChartBig },
-  { href: '/market-insights', label: 'Market Insights', icon: FileSearch },
-  { href: '/guidelines', label: 'User Guidelines', icon: BookOpen },
+  { href: '/stock-prediction', label: 'Stock Prediction', icon: TrendingUp },
+  { href: '/market-insights', label: 'Market Insights', icon: Newspaper },
+  { href: '/history', label: 'Trading History', icon: ScrollText },
+  { href: '/guidelines', label: 'User Guidelines', icon: FileText },
 ];
 
 const NavLink = ({ href, label, icon: Icon, onClick }: { href: string; label: string; icon: React.ElementType; onClick?: () => void }) => (
   <Link href={href} passHref legacyBehavior>
     <a
       onClick={onClick}
-      className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md text-foreground hover:bg-accent/10 hover:text-primary transition-colors"
+      className="flex items-center gap-3 px-4 py-3 text-md font-medium rounded-lg text-foreground hover:bg-accent/10 hover:text-primary transition-colors"
     >
       <Icon className="h-5 w-5" />
       {label}
@@ -35,31 +37,30 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <nav className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
-              <NavLink key={item.href} {...item} />
-            ))}
-          </nav>
           <ThemeToggle />
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <nav className="flex flex-col space-y-4 pt-6">
-                  {navItems.map((item) => (
-                     <SheetClose asChild key={item.href}>
-                       <NavLink {...item} />
-                     </SheetClose>
-                  ))}
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[320px] pt-10 bg-background">
+               <Link href="/" passHref legacyBehavior>
+                  <a className="flex items-center gap-2 text-lg font-bold text-primary mb-6 px-4">
+                    <Landmark className="h-6 w-6" />
+                    <span>StockPro Analytics</span>
+                  </a>
+                </Link>
+              <nav className="flex flex-col space-y-2">
+                {navItems.map((item) => (
+                   <SheetClose asChild key={item.href}>
+                     <NavLink {...item} />
+                   </SheetClose>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

@@ -1,7 +1,7 @@
 
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb, AlertTriangle, TrendingUp, FileSearch } from 'lucide-react';
+import { Lightbulb, AlertTriangle, TrendingUp, FileText, Activity } from 'lucide-react';
 
 export default function GuidelinesPage() {
   return (
@@ -58,7 +58,7 @@ export default function GuidelinesPage() {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl text-primary">
-            <FileSearch className="h-6 w-6" />
+            <Activity className="h-6 w-6" />
             Using the AI Market Insights Tool
           </CardTitle>
         </CardHeader>
