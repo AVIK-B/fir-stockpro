@@ -6,6 +6,7 @@ import { z } from 'zod';
 const PortfolioCalculatorServerInputSchema = z.object({
   investmentAmount: z.coerce.number({invalid_type_error: "Investment amount must be a number."}).positive("Investment amount must be a positive number."),
   riskTolerance: z.enum(['Low', 'Medium', 'High'], { required_error: "Risk tolerance is required."}),
+  targetAnnualReturn: z.coerce.number({invalid_type_error: "Target return must be a number."}).positive("Target annual return must be a positive percentage.").min(0.1, "Target return should be at least 0.1%.").max(100, "Target return over 100% is highly speculative.").optional(),
 });
 
 export async function handlePortfolioSuggestion(
@@ -30,3 +31,4 @@ export async function handlePortfolioSuggestion(
     return { success: false, error: `Failed to get portfolio suggestion: ${errorMessage}` };
   }
 }
+

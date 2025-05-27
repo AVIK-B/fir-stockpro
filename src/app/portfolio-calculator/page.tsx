@@ -5,13 +5,13 @@ import { useState, useMemo } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, AlertCircle, PiggyBank, BarChart2, FileText, AlertTriangle, Info } from 'lucide-react';
+import { Loader2, AlertCircle, PiggyBank, BarChart2, FileText, AlertTriangle, Info, Target } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 
 import { PageTitle } from '@/components/shared/PageTitle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/label'; // Keep if used outside form
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -29,11 +29,15 @@ const formSchema = z.object({
     .min(100, "Minimum investment amount is $100.")
     .max(10000000, "Maximum investment amount is $10,000,000."),
   riskTolerance: z.enum(['Low', 'Medium', 'High'], { required_error: "Please select your risk tolerance." }),
+  targetAnnualReturn: z.coerce
+    .number({ invalid_type_error: "Target return must be a number." })
+    .min(0.1, "Target return should be at least 0.1%.")
+    .max(100, "A target return over 100% is highly speculative and likely unrealistic for most diversified portfolios.")
+    .optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Define a color palette for chart segments
 const CHART_COLORS = [
   "hsl(var(--chart-1))",
   "hsl(var(--chart-2))",
@@ -54,8 +58,9 @@ export default function PortfolioCalculatorPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      investmentAmount: '', // Initialize as empty string
+      investmentAmount: '', 
       riskTolerance: undefined,
+      targetAnnualReturn: '', // Initialize as empty string
     },
   });
 
@@ -64,7 +69,12 @@ export default function PortfolioCalculatorPage() {
     setError(null);
     setSuggestionResult(null);
 
-    const result = await handlePortfolioSuggestion(data);
+    const dataForAI: PortfolioSuggestionInput = {
+        ...data,
+        targetAnnualReturn: data.targetAnnualReturn ? Number(data.targetAnnualReturn) : undefined,
+    };
+
+    const result = await handlePortfolioSuggestion(dataForAI);
 
     setIsLoading(false);
     if (result.success && result.data) {
@@ -77,8 +87,10 @@ export default function PortfolioCalculatorPage() {
       setError(result.error || "An unknown error occurred.");
       if (result.fieldErrors) {
         Object.entries(result.fieldErrors).forEach(([field, fieldError]) => {
-          if (field !== "_errors" && fieldError?._errors?.[0]) {
-            form.setError(field as keyof FormValues, { type: 'server', message: fieldError._errors[0] });
+          // Ensure field is a key of FormValues before calling setError
+          const castedField = field as keyof FormValues;
+          if (field !== "_errors" && fieldError?._errors?.[0] && Object.keys(form.getValues()).includes(castedField)) {
+            form.setError(castedField, { type: 'server', message: fieldError._errors[0] });
           }
         });
       }
@@ -93,7 +105,7 @@ export default function PortfolioCalculatorPage() {
   const chartConfig = useMemo<ChartConfig>(() => {
     const allocation = suggestionResult?.portfolioAllocation;
     if (!Array.isArray(allocation) || allocation.length === 0) {
-      return {} as ChartConfig; // Return empty config if no allocation
+      return {} as ChartConfig;
     }
     
     const config: ChartConfig = {};
@@ -111,20 +123,18 @@ export default function PortfolioCalculatorPage() {
   const chartData = useMemo(() => {
     const allocation = suggestionResult?.portfolioAllocation;
     if (!Array.isArray(allocation) || allocation.length === 0 || Object.keys(chartConfig).length === 0) {
-      return []; // Return empty array if no allocation or config
+      return []; 
     }
     const mappedData = allocation.map(asset => {
       if (asset && typeof asset.assetClass === 'string' && typeof asset.percentage === 'number') {
         return {
           name: asset.assetClass,
           value: asset.percentage,
-          // Ensure chartConfig exists and has the assetClass key before trying to access color
-          fill: chartConfig[asset.assetClass]?.color || CHART_COLORS[0], // Fallback color
+          fill: chartConfig[asset.assetClass]?.color || CHART_COLORS[0], 
         };
       }
-      return null; // Explicitly return null for invalid items
+      return null; 
     });
-    // Filter out any nulls that might have resulted from invalid asset data
     return mappedData.filter(item => item !== null) as { name: string; value: number; fill: string; }[];
   }, [suggestionResult, chartConfig]);
 
@@ -133,15 +143,15 @@ export default function PortfolioCalculatorPage() {
     <div className="space-y-12">
       <PageTitle
         title="AI-Driven Portfolio Calculator"
-        subtitle="Enter your investment amount and risk tolerance to receive an AI-generated portfolio suggestion."
+        subtitle="Enter your investment details to receive an AI-generated portfolio suggestion tailored to your goals."
       />
       
       <Alert variant="default" className="max-w-3xl mx-auto bg-primary/5 border-primary/20">
         <Info className="h-5 w-5 text-primary" />
         <AlertTitle className="text-primary">How This Tool Works</AlertTitle>
         <AlertDescription className="text-primary/80">
-          This tool uses AI to generate a sample diversified portfolio based on your inputs and general market understanding up to its last training data.
-          It considers your risk tolerance to balance potential returns with potential risks.
+          This tool uses AI to generate a sample diversified portfolio. It considers your investment amount, risk tolerance, and optional target annual return,
+          balancing potential returns with risks based on its general market understanding.
           The output includes asset allocations, rationale, and an estimated return range.
           <strong>This is for informational purposes only and is NOT financial advice.</strong>
         </AlertDescription>
@@ -151,7 +161,7 @@ export default function PortfolioCalculatorPage() {
         <CardHeader>
           <CardTitle className="text-2xl text-primary flex items-center gap-2">
             <PiggyBank className="h-6 w-6"/>
-            Portfolio Input
+            Investment Profile
           </CardTitle>
           <CardDescription>Tell us about your investment goals.</CardDescription>
         </CardHeader>
@@ -165,7 +175,7 @@ export default function PortfolioCalculatorPage() {
                   <FormItem>
                     <FormLabel>Investment Amount (USD)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 10000" {...field} />
+                      <Input type="number" placeholder="e.g., 10000" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -189,6 +199,22 @@ export default function PortfolioCalculatorPage() {
                         <SelectItem value="High">High</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="targetAnnualReturn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-1">
+                      Target Annual Return (%)
+                      <span className="text-xs text-muted-foreground">(Optional)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="e.g., 8 for 8%" {...field} value={field.value ?? ''} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -239,14 +265,16 @@ export default function PortfolioCalculatorPage() {
                 Suggested Portfolio Allocation
               </CardTitle>
               <CardDescription>
-                Based on an investment of ${form.getValues('investmentAmount').toLocaleString()} with {form.getValues('riskTolerance')} risk tolerance.
+                Based on an investment of ${Number(form.getValues('investmentAmount')).toLocaleString()} 
+                with {form.getValues('riskTolerance')} risk tolerance
+                {form.getValues('targetAnnualReturn') ? ` and a target annual return of ${form.getValues('targetAnnualReturn')}%` : ''}.
               </CardDescription>
             </CardHeader>
             <CardContent>
               {chartData.length > 0 ? (
                 <ChartContainer config={chartConfig} className="w-full h-[300px] sm:h-[350px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} layout="vertical" margin={{ right: 30, left: 30 }}>
+                    <BarChart data={chartData} layout="vertical" margin={{ right: 30, left: 30, bottom: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                       <XAxis type="number" unit="%" domain={[0, 100]} />
                       <YAxis dataKey="name" type="category" width={150} interval={0} style={{ fontSize: '0.8rem' }}/>
@@ -254,7 +282,7 @@ export default function PortfolioCalculatorPage() {
                         cursor={{ fill: 'hsl(var(--muted))' }}
                         content={<ChartTooltipContent indicator="dot" />}
                       />
-                      <Legend content={<ChartLegendContent />} />
+                      <Legend content={<ChartLegendContent verticalAlign="bottom" wrapperStyle={{paddingTop: "20px"}} />} />
                       <Bar dataKey="value" radius={4}>
                          {chartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -285,7 +313,7 @@ export default function PortfolioCalculatorPage() {
             <Card className="shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl text-primary">
-                  Projected Annual Return
+                 <Target className="h-5 w-5" /> Projected Annual Return
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -298,7 +326,7 @@ export default function PortfolioCalculatorPage() {
             <Card className="shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl text-primary">
-                  Risk Analysis
+                  <AlertCircle className="h-5 w-5" /> Risk Analysis
                 </CardTitle>
               </CardHeader>
               <CardContent>
