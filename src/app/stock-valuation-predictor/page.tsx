@@ -60,12 +60,12 @@ export default function StockValuationPredictorPage() {
     defaultValues: {
       tickerSymbol: '',
       optionType: undefined, 
-      strikePrice: undefined,
+      strikePrice: '', // Changed from undefined
       expiryDate: undefined,
-      currentPrice: undefined,
-      volatility: undefined,
-      riskFreeRate: undefined,
-      timeToExpiry: undefined,
+      currentPrice: '', // Changed from undefined
+      volatility: '', // Changed from undefined
+      riskFreeRate: '', // Changed from undefined
+      timeToExpiry: '', // Changed from undefined
     },
   });
 
@@ -91,6 +91,12 @@ export default function StockValuationPredictorPage() {
     const inputForAI: StockPredictionInput = {
       ...data,
       expiryDate: format(data.expiryDate, 'yyyy-MM-dd'),
+      // Ensure numeric fields are numbers before sending to AI
+      strikePrice: Number(data.strikePrice),
+      currentPrice: Number(data.currentPrice),
+      volatility: Number(data.volatility),
+      riskFreeRate: Number(data.riskFreeRate),
+      timeToExpiry: Number(data.timeToExpiry),
     };
 
     const result = await handleStockPrediction(inputForAI);
@@ -239,7 +245,7 @@ export default function StockValuationPredictorPage() {
                         <FormItem>
                         <FormLabel>Strike Price ($)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="150" {...field} step="0.01" />
+                            <Input type="number" placeholder="150" {...field} step="0.01" value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -294,7 +300,7 @@ export default function StockValuationPredictorPage() {
                         <FormItem>
                         <FormLabel>Current Stock Price ($)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="145.50" {...field} step="0.01" />
+                            <Input type="number" placeholder="145.50" {...field} step="0.01" value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -307,7 +313,7 @@ export default function StockValuationPredictorPage() {
                         <FormItem>
                         <FormLabel>Volatility (e.g., 0.3 for 30%)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="0.3" {...field} step="0.01" />
+                            <Input type="number" placeholder="0.3" {...field} step="0.01" value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -323,7 +329,7 @@ export default function StockValuationPredictorPage() {
                         <FormItem>
                         <FormLabel>Risk-Free Rate (e.g., 0.02 for 2%)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="0.02" {...field} step="0.001" />
+                            <Input type="number" placeholder="0.02" {...field} step="0.001" value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -336,7 +342,7 @@ export default function StockValuationPredictorPage() {
                         <FormItem>
                         <FormLabel>Time to Expiry (Years)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="0.25" {...field} step="0.01" />
+                            <Input type="number" placeholder="0.25" {...field} step="0.01" value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
