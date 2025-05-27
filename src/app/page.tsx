@@ -27,21 +27,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Placeholder Image Section */}
-      <section className="py-12">
-        <div className="aspect-[16/9] md:aspect-[21/9] w-full max-w-5xl mx-auto rounded-lg overflow-hidden shadow-2xl">
-          <Image
-            src="https://placehold.co/1200x600.png"
-            alt="Stock Market Analysis Illustration"
-            width={1200}
-            height={600}
-            className="object-cover w-full h-full"
-            data-ai-hint="stock market finance"
-            priority
-          />
-        </div>
-      </section>
-
       {/* Navigating the Market Section */}
       <section className="py-12">
         <Card className="max-w-4xl mx-auto shadow-xl overflow-hidden">
