@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { Landmark, Home, BookOpen, BarChartBig, FileSearch, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import { ThemeToggle } from './ThemeToggle';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
@@ -34,30 +34,32 @@ export function Header() {
           </a>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-1">
-          {navItems.map((item) => (
-            <NavLink key={item.href} {...item} />
-          ))}
-        </nav>
-
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col space-y-4 pt-6">
-                {navItems.map((item) => (
-                  <SheetTrigger asChild key={item.href}>
-                     <NavLink {...item} />
-                  </SheetTrigger>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
+        <div className="flex items-center gap-2">
+          <nav className="hidden md:flex items-center space-x-1">
+            {navItems.map((item) => (
+              <NavLink key={item.href} {...item} />
+            ))}
+          </nav>
+          <ThemeToggle />
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <nav className="flex flex-col space-y-4 pt-6">
+                  {navItems.map((item) => (
+                     <SheetClose asChild key={item.href}>
+                       <NavLink {...item} />
+                     </SheetClose>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>
