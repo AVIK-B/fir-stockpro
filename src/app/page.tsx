@@ -1,8 +1,9 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, BarChartBig, FileSearch, BookOpen } from 'lucide-react';
+import { CheckCircle, BarChartBig, FileSearch, BookOpen, TrendingUp, Briefcase, ShieldCheck, Cpu } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -35,25 +36,58 @@ export default function HomePage() {
             width={1200}
             height={600}
             className="object-cover w-full h-full"
-            data-ai-hint="stock market graph"
+            data-ai-hint="stock market finance"
             priority
           />
         </div>
       </section>
 
-      {/* What is Stock Options Trading? */}
+      {/* Navigating the Market Section */}
       <section className="py-12">
-        <Card className="max-w-4xl mx-auto shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-3xl text-primary text-center">What is Stock Options Trading?</CardTitle>
+        <Card className="max-w-4xl mx-auto shadow-xl overflow-hidden">
+          <CardHeader className="bg-muted/30">
+            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4">
+              <Briefcase className="h-16 w-16 text-accent sm:ml-2" />
+              <div>
+                <CardTitle className="text-3xl text-primary">Navigating the Market: Stocks & Options</CardTitle>
+                <CardDescription className="text-lg text-foreground/70 mt-1">
+                  Understanding the fundamentals to trade smarter.
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
-            <p className="text-foreground/80 leading-relaxed">
-              Stock options are contracts that give the owner the right, but not the obligation, to buy or sell a specific stock at a predetermined price (strike price) on or before a specific date (expiration date). Options trading can be complex but offers opportunities for hedging risk, generating income, or speculating on market movements. Understanding the factors that influence option prices, like stock volatility, time to expiration, and interest rates, is crucial for success.
-            </p>
-            <p className="mt-4 text-foreground/80 leading-relaxed">
-              StockPro Analytics aims to simplify this complexity by providing tools that leverage AI to analyze these factors and offer potential future stock price predictions and market insights.
-            </p>
+          <CardContent className="p-6 md:p-8 space-y-6">
+            <div>
+              <h3 className="text-xl font-semibold text-primary mb-2">The Stock Market Basics</h3>
+              <p className="text-foreground/80 leading-relaxed">
+                The stock market is a dynamic environment where shares of publicly traded companies are bought and sold. It allows businesses to raise capital for growth and offers investors the opportunity to own a piece of those companies, potentially growing their wealth over time. Prices fluctuate based on company performance, economic conditions, and investor sentiment.
+              </p>
+            </div>
+            <hr className="my-6 border-border" />
+            <div>
+              <h3 className="text-xl font-semibold text-primary mb-2">Understanding Stock Options</h3>
+              <p className="text-foreground/80 leading-relaxed mb-3">
+                Stock options are contracts that grant the holder the right—but not the obligation—to buy or sell a specific stock at a predetermined price, known as the <strong className="text-foreground">strike price</strong>, on or before a specific <strong className="text-foreground">expiration date</strong>.
+              </p>
+              <p className="text-foreground/80 leading-relaxed">
+                Options trading can be a versatile tool for:
+              </p>
+              <ul className="list-disc list-inside mt-2 space-y-1 text-foreground/70 pl-4">
+                <li><strong className="text-foreground/90">Hedging Risk:</strong> Protecting existing investments against potential price declines.</li>
+                <li><strong className="text-foreground/90">Generating Income:</strong> Earning premiums by selling options.</li>
+                <li><strong className="text-foreground/90">Speculating:</strong> Betting on the future direction of a stock's price with potentially amplified returns (and risks).</li>
+              </ul>
+              <p className="mt-3 text-foreground/80 leading-relaxed">
+                Successfully trading options requires understanding factors like stock volatility, time decay, and interest rates.
+              </p>
+            </div>
+             <hr className="my-6 border-border" />
+            <div>
+              <h3 className="text-xl font-semibold text-primary mb-2">How StockPro Analytics Helps</h3>
+              <p className="text-foreground/80 leading-relaxed">
+                StockPro Analytics aims to demystify the complexities of options trading. Our AI-powered tools analyze these critical factors to provide you with data-driven stock price predictions and broader market insights, helping you make more informed decisions.
+              </p>
+            </div>
           </CardContent>
         </Card>
       </section>
@@ -63,15 +97,15 @@ export default function HomePage() {
         <h2 className="text-3xl font-bold text-center text-primary mb-12">Our Core Features</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard
-            icon={<BarChartBig className="h-10 w-10 text-accent" />}
-            title="Algorithmic Stock Prediction"
+            icon={<Cpu className="h-10 w-10 text-accent" />}
+            title="AI Stock Prediction"
             description="Utilize our AI-powered tool that integrates multiple advanced algorithms to predict future stock prices. Get an averaged, data-driven outlook."
             link="/stock-prediction"
             linkLabel="Try Prediction Tool"
           />
           <FeatureCard
             icon={<FileSearch className="h-10 w-10 text-accent" />}
-            title="AI-Driven Market Insights"
+            title="AI Market Insights"
             description="Gain valuable insights based on current market indicators and historical data. Understand key factors, trends, and potential risks."
             link="/market-insights"
             linkLabel="Get Market Insights"
