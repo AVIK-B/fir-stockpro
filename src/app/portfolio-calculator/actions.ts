@@ -15,10 +15,10 @@ export async function handlePortfolioSuggestion(
   const validatedFields = PortfolioCalculatorServerInputSchema.safeParse(data);
 
   if (!validatedFields.success) {
-    return { 
-      success: false, 
+    return {
+      success: false,
       error: "Invalid input. Please check the fields.",
-      fieldErrors: validatedFields.error.format() 
+      fieldErrors: validatedFields.error.format()
     };
   }
 
@@ -26,9 +26,28 @@ export async function handlePortfolioSuggestion(
     const result = await suggestPortfolio(validatedFields.data as PortfolioSuggestionInput);
     return { success: true, data: result };
   } catch (error) {
-    console.error("Portfolio suggestion error:", error);
-    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred generating the portfolio suggestion.";
-    return { success: false, error: `Failed to get portfolio suggestion: ${errorMessage}` };
+    console.error("Portfolio suggestion error:", error); // Full error for server logs
+
+    let displayError = "Failed to generate portfolio suggestion. ";
+    if (error instanceof Error && error.message) {
+        const knownFlowErrors = [
+            "The AI model did not return any portfolio suggestion",
+            "AI failed to generate a portfolio allocation",
+            "AI response is missing the critical financial advice disclaimer",
+            "AI failed to generate a valid projected return range"
+        ];
+
+        if (knownFlowErrors.some(knownError => error.message.includes(knownError))) {
+            displayError = error.message; // Use the more specific error from the flow
+        } else if (error.message.toLowerCase().includes("zod") || error.message.toLowerCase().includes("schema validation")) {
+            displayError += "The AI's response could not be processed due to a formatting issue. This can sometimes happen with complex requests. Please try rephrasing, simplifying your target return, or try again in a moment.";
+        } else {
+            // For other errors, provide a generic message but include a snippet for context if needed, capped for brevity.
+            displayError += "An unexpected issue occurred with the AI model. Please ensure all inputs are reasonable. (Details: " + error.message.substring(0, 150) + ")";
+        }
+    } else {
+        displayError += "An unknown error occurred. Please check your inputs and try again.";
+    }
+    return { success: false, error: displayError };
   }
 }
-

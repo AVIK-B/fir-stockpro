@@ -15,7 +15,6 @@ const PortfolioSuggestionInputSchema = z.object({
   investmentAmount: z.number().positive().describe('The total amount of USD to invest.'),
   riskTolerance: z.enum(['Low', 'Medium', 'High']).describe('The investor\'s risk tolerance level.'),
   targetAnnualReturn: z.number().positive().describe('The desired target annual return percentage (e.g., 8 for 8%). The AI will try to construct a portfolio aiming for this return, balanced with the risk tolerance.').optional(),
-  // Optional: Could add investmentHorizon: z.string().describe('e.g., Short-term (1-3 years), Medium-term (3-7 years), Long-term (7+ years)')
 });
 export type PortfolioSuggestionInput = z.infer<typeof PortfolioSuggestionInputSchema>;
 
@@ -79,8 +78,7 @@ Instructions:
     *   CRITICAL: Ensure the 'importantDisclaimer' field is populated with the standard disclaimer provided in the schema.
 
 Output Format:
-Strictly adhere to the JSON schema provided for 'PortfolioSuggestionOutputSchema'. Ensure all percentages sum to 100. Ensure rationale is provided for each asset class.
-The 'importantDisclaimer' field MUST be included and accurate.
+You MUST strictly adhere to the JSON schema provided for 'PortfolioSuggestionOutputSchema'. Ensure all percentages sum to 100, rationale is provided for each asset class, and the 'importantDisclaimer' field is accurately populated.
 
 Generate the portfolio suggestion now.
 `,
@@ -103,9 +101,11 @@ const portfolioSuggestionFlow = ai.defineFlow(
     const totalPercentage = output.portfolioAllocation.reduce((sum, asset) => sum + asset.percentage, 0);
     if (Math.abs(totalPercentage - 100) > 0.1) { // Allow for tiny floating point inaccuracies
         console.warn("AI generated portfolio allocation does not sum to 100%", totalPercentage);
+        // This could be upgraded to an error if strict adherence is critical for display.
+        // throw new Error(`AI generated portfolio allocation that sums to ${totalPercentage.toFixed(1)}% instead of 100%. Please try again.`);
     }
     if(!output.importantDisclaimer || !output.importantDisclaimer.includes("NOT financial advice")) {
-        throw new Error("AI response is missing the critical financial advice disclaimer.");
+        throw new Error("AI response is missing the critical financial advice disclaimer. Output cannot be used.");
     }
 
     if (!output.projectedReturnRange ||
@@ -114,10 +114,11 @@ const portfolioSuggestionFlow = ai.defineFlow(
       throw new Error("AI failed to generate a valid projected return range. Please check your input values or try again.");
     }
     if (output.projectedReturnRange.low > output.projectedReturnRange.high) {
-      console.warn(`AI generated an unusual projected return range: low ${output.projectedReturnRange.low}, high ${output.projectedReturnRange.high}. Proceeding, but this might indicate an issue with AI's reasoning.`);
+      // This is a strong indicator of faulty AI logic for this specific request.
+      console.warn(`AI generated an inverted projected return range: low ${output.projectedReturnRange.low}%, high ${output.projectedReturnRange.high}%.`);
+      throw new Error(`AI generated an inconsistent projected return range (low: ${output.projectedReturnRange.low}%, high: ${output.projectedReturnRange.high}%). This might indicate an issue with the AI's reasoning for the given inputs. Please try adjusting your inputs or try again.`);
     }
     
     return output;
   }
 );
-
