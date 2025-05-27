@@ -54,7 +54,7 @@ export default function PortfolioCalculatorPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      investmentAmount: undefined,
+      investmentAmount: '', // Initialize as empty string
       riskTolerance: undefined,
     },
   });
@@ -93,7 +93,7 @@ export default function PortfolioCalculatorPage() {
   const chartConfig = useMemo<ChartConfig>(() => {
     const allocation = suggestionResult?.portfolioAllocation;
     if (!Array.isArray(allocation) || allocation.length === 0) {
-      return {} as ChartConfig;
+      return {} as ChartConfig; // Return empty config if no allocation
     }
     
     const config: ChartConfig = {};
@@ -111,18 +111,20 @@ export default function PortfolioCalculatorPage() {
   const chartData = useMemo(() => {
     const allocation = suggestionResult?.portfolioAllocation;
     if (!Array.isArray(allocation) || allocation.length === 0 || Object.keys(chartConfig).length === 0) {
-      return [];
+      return []; // Return empty array if no allocation or config
     }
     const mappedData = allocation.map(asset => {
       if (asset && typeof asset.assetClass === 'string' && typeof asset.percentage === 'number') {
         return {
           name: asset.assetClass,
           value: asset.percentage,
-          fill: chartConfig[asset.assetClass]?.color || CHART_COLORS[0], 
+          // Ensure chartConfig exists and has the assetClass key before trying to access color
+          fill: chartConfig[asset.assetClass]?.color || CHART_COLORS[0], // Fallback color
         };
       }
-      return null; 
+      return null; // Explicitly return null for invalid items
     });
+    // Filter out any nulls that might have resulted from invalid asset data
     return mappedData.filter(item => item !== null) as { name: string; value: number; fill: string; }[];
   }, [suggestionResult, chartConfig]);
 
