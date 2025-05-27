@@ -7,7 +7,7 @@ export default function HistoryPage() {
   return (
     <div className="space-y-12">
       <PageTitle
-        title="A Journey Through Stock Trading History"
+        title="History of Stock Market & Trading"
         subtitle="Exploring pivotal moments, legendary rivalries, and transformative crises that shaped modern markets."
       />
 
@@ -90,24 +90,43 @@ export default function HistoryPage() {
           <p>
             Market history is punctuated by periods of crisis that have led to significant economic downturns and regulatory reforms:
           </p>
-          <ul className="list-disc list-inside space-y-2 pl-4">
+          <ul className="list-disc list-inside space-y-3 pl-4">
             <li>
               <strong>Tulip Mania (1637):</strong> One of the earliest recorded speculative bubbles, where prices for tulip bulbs in the Netherlands reached extraordinary highs before collapsing.
             </li>
             <li>
-              <strong>The Panic of 1907:</strong> A financial crisis in the US that led to the creation of the Federal Reserve System.
+              <strong>The Panic of 1907:</strong> A financial crisis in the US triggered by a failed attempt to corner the market on United Copper Company stock, leading to bank runs and highlighting the need for a central bank, which culminated in the creation of the Federal Reserve System in 1913.
             </li>
             <li>
-              <strong>The Wall Street Crash of 1929 & The Great Depression (1930s):</strong> A devastating stock market crash that precipitated a decade-long global economic depression, leading to significant government intervention and financial regulations (e.g., SEC formation).
+              <strong>The Wall Street Crash of 1929 & The Great Depression (1930s):</strong> A devastating stock market crash, beginning with Black Tuesday (October 29, 1929), that wiped out billions in market value and precipitated a decade-long global economic depression. This led to significant government intervention and financial regulations, including the Glass-Steagall Act and the formation of the Securities and Exchange Commission (SEC).
             </li>
              <li>
-              <strong>Black Monday (1987):</strong> Stock markets worldwide crashed, shedding a huge value in a very short time, largely attributed to program trading.
+              <strong>Black Monday (1987):</strong> Stock markets worldwide crashed, with the Dow Jones Industrial Average (DJIA) falling over 22% in a single day. Program trading (computerized trading strategies) was widely blamed for exacerbating the sell-off. Circuit breakers were subsequently introduced to halt trading during extreme volatility.
             </li>
             <li>
-              <strong>The Global Financial Crisis (2007-2008):</strong> Triggered by the collapse of the US housing market and the subsequent failure of major financial institutions, leading to a severe global recession and renewed calls for financial reform.
+              <strong>The Global Financial Crisis (2007-2008):</strong> Triggered by the collapse of the US housing market due to widespread defaults on subprime mortgages and the subsequent failure or near-failure of major financial institutions.
+              <ul className="list-disc list-inside space-y-1 pl-5 mt-2 text-sm">
+                <li><strong>Key Causes:</strong> Lax lending standards, complex financial instruments like Collateralized Debt Obligations (CDOs) and Mortgage-Backed Securities (MBS) that spread risk opaquely, and failures in credit rating agencies.</li>
+                <li><strong>Impacted Companies:</strong> Lehman Brothers filed for bankruptcy, marking a pivotal moment. Bear Stearns was acquired by JPMorgan Chase in a fire sale. AIG (American International Group), a massive insurer, required an enormous government bailout due to its exposure to credit default swaps. Many other banks like Citigroup and Bank of America also faced severe difficulties and required government assistance (TARP - Troubled Asset Relief Program).</li>
+                <li><strong>Profiting Entities (Complex):</strong> While widespread losses occurred, some hedge funds, like those managed by John Paulson, famously profited by shorting the housing market (betting against mortgage-backed securities). Some stronger financial institutions were able to acquire weaker rivals at distressed prices.</li>
+              </ul>
+              This crisis led to a severe global recession and significant regulatory reforms like the Dodd-Frank Wall Street Reform and Consumer Protection Act.
             </li>
             <li>
-              <strong>COVID-19 Pandemic Crash (2020):</strong> A sharp, rapid global stock market crash caused by the economic uncertainty and shutdowns related to the COVID-19 pandemic, followed by a swift, but uneven, recovery.
+              <strong>COVID-19 Pandemic Crash (2020):</strong> A sharp, rapid global stock market crash in February-March 2020 caused by the economic uncertainty and widespread shutdowns related to the COVID-19 pandemic.
+               <ul className="list-disc list-inside space-y-1 pl-5 mt-2 text-sm">
+                <li><strong>Immediate Impact:</strong> Airlines, cruise lines, hospitality (hotels, restaurants), and brick-and-mortar retail stocks plummeted as travel ceased and businesses closed. Oil prices also crashed due to a sudden drop in demand.</li>
+                <li><strong>Companies/Sectors That Thrived or Adapted Quickly:</strong>
+                    <ul>
+                        <li><strong>Technology & E-commerce:</strong> Companies like Amazon (e-commerce, cloud), Microsoft (cloud, remote work tools), Apple (devices), and Alphabet/Google (digital services) saw increased demand.</li>
+                        <li><strong>Remote Work & Communication:</strong> Zoom Video Communications became a household name.</li>
+                        <li><strong>Streaming & Entertainment:</strong> Netflix and other streaming services benefited from stay-at-home orders.</li>
+                        <li><strong>Pharmaceuticals & Biotech:</strong> Companies involved in vaccine development (e.g., Pfizer, Moderna, AstraZeneca, Johnson & Johnson) and COVID-19 treatments saw significant attention and investment.</li>
+                        <li><strong>Logistics & Delivery:</strong> Companies involved in delivering goods saw a surge in business.</li>
+                    </ul>
+                </li>
+                <li><strong>Recovery:</strong> Markets recovered relatively quickly due to unprecedented government stimulus packages and central bank interventions, though the recovery was uneven across sectors.</li>
+              </ul>
             </li>
           </ul>
           <p>

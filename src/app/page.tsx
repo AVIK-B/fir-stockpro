@@ -100,7 +100,7 @@ export default function HomePage() {
           />
           <FeatureCard
             icon={<HistoryIcon className="h-10 w-10 text-accent" />}
-            title="Stock Market History"
+            title="History of Stock Market & Trading"
             description="Explore pivotal moments, legendary rivalries, and transformative crises that shaped modern stock markets and investing."
             link="/history"
             linkLabel="View History"
@@ -157,4 +157,3 @@ function FeatureCard({ icon, title, description, link, linkLabel }: FeatureCardP
     </Card>
   );
 }
-

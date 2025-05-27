@@ -9,7 +9,7 @@ const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/stock-prediction', label: 'Stock Prediction', icon: TrendingUp },
   { href: '/market-insights', label: 'Market Insights', icon: Newspaper },
-  { href: '/history', label: 'Stock Market History', icon: HistoryIcon },
+  { href: '/history', label: 'History of Stock Market & Trading', icon: HistoryIcon },
   { href: '/guidelines', label: 'User Guidelines', icon: FileText },
 ];
 
@@ -40,7 +40,7 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[320px] p-0 flex flex-col bg-background">
-              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              <SheetTitle className="sr-only">StockPro Analytics Navigation Menu</SheetTitle>
               <div className="p-4 border-b">
                 <Link href="/" passHref legacyBehavior>
                   <a className="flex items-center gap-2 text-lg font-bold text-primary">
@@ -83,4 +83,3 @@ export function Header() {
     </header>
   );
 }
-
